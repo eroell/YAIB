@@ -337,7 +337,8 @@ class DLPredictionWrapper(DLWrapper):
 
         if prediction.shape[-1] > 1 and self.run_mode == RunMode.classification:
             # Classification task
-            loss = self.loss(prediction, target.long(), weight=self.loss_weights.to(self.device)) + aux_loss
+            # TODO: Hotfix by eroell: some bug allows self.loss_weights == ''
+            loss = self.loss(prediction, target.long(), weight=self.loss_weights.to(self.device) if isinstance(self.loss_weights, Tensor) else None) + aux_loss
             # Returns torch.long because negative log likelihood loss
         elif self.run_mode == RunMode.regression:
             # Regression task

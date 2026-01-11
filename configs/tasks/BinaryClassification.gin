@@ -8,7 +8,7 @@ include "configs/tasks/common/PredictionTaskVariables.gin"
 include "configs/tasks/common/CrossValidation.gin"
 
 # MODE SETTINGS
-Run.mode = "Classification"
+RunMode = "Classification" # Run.mode 
 NUM_CLASSES = 2 # Binary classification
 HORIZON = 24
 train_common.weight = "balanced"

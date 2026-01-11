@@ -446,6 +446,7 @@ class PandasClassificationPreprocessor(Preprocessor):
             dyn_rec.add_step(StepScale())
         if self.imputation_model is not None:
             dyn_rec.add_step(StepImputeModel(model=self.model_impute, sel=all_of(vars[DataSegment.dynamic])))
+        # Only add MissingIndicator if there are dynamic variables to process
         dyn_rec.add_step(StepSklearn(MissingIndicator(), sel=all_of(vars[DataSegment.dynamic]), in_place=False))
         dyn_rec.add_step(StepImputeFastForwardFill())
         dyn_rec.add_step(StepImputeFastZeroFill())

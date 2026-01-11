@@ -1,4 +1,4 @@
-name: yaib
+name: yaib_from_ymlII
 channels:
   - conda-forge
 dependencies:
