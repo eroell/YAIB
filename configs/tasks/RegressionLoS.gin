@@ -1,0 +1,8 @@
+# Length-of-stay regression: same as Regression but outcome range [0, 168] hours
+# (YAIB-cohorts los.py caps remaining LoS at 7*24h). Base Regression.gin uses 0-15 (kidney
+# function, mg/dL), which is wrong for LoS. Include base then override the outcome scaling.
+# Ported from code/Bachelor_v2/Bachelor. Use with:  icu-benchmarks train ... -t RegressionLoS
+include "configs/tasks/Regression.gin"
+
+base_regression_preprocessor.outcome_min = 0
+base_regression_preprocessor.outcome_max = 168

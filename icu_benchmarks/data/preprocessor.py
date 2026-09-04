@@ -320,8 +320,11 @@ class PolarsRegressionPreprocessor(PolarsClassificationPreprocessor):
         else:
             # If the range is not predefined, use MinMaxScaler
             outcome_rec.add_step(StepSklearn(MinMaxScaler(), sel=all_outcomes()))
-        outcome_rec.prep()
-        data[split][DataSegment.outcome] = pl.DataFrame(outcome_rec.bake())
+        # BUGFIX: recipys .prep() already fits AND bakes (returns the transformed data).
+        # The previous code then called .bake() again, which re-applied the affine map to the
+        # already-transformed data -> outcomes scaled by (max-min) TWICE (e.g. /225 not /15 for KF).
+        # Use prep()'s return directly (matches Bachelor_v2 fix).
+        data[split][DataSegment.outcome] = pl.DataFrame(outcome_rec.prep())
         return data
 
 
@@ -536,8 +539,10 @@ class PandasRegressionPreprocessor(PandasClassificationPreprocessor):
         else:
             # If the range is not predefined, use MinMaxScaler
             outcome_rec.add_step(StepSklearn(MinMaxScaler(), sel=all_outcomes()))
-        outcome_rec.prep()
-        data[split][DataSegment.outcome] = outcome_rec.bake()
+        # BUGFIX (same as Polars variant above): prep() already fits AND bakes; calling bake()
+        # again double-applies the affine map. Use prep()'s return directly. (Pandas path unused
+        # by default runs, but kept correct for consistency.)
+        data[split][DataSegment.outcome] = outcome_rec.prep()
         return data
 
 
